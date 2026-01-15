@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>QR 코드 생성기 (단일 HTML)</title>
+<style>
+  :root{
+    --bg:#f7f7f9;
+    --panel:#ffffff;
+    --text:#1a1a1a;
+    --muted:#6b7280;
+    --primary:#2563eb;
+    --border:#e5e7eb;
+  }
+  .dark{
+    --bg:#0f1115;
+    --panel:#161a22;
+    --text:#e5e7eb;
+    --muted:#9ca3af;
+    --primary:#3b82f6;
+    --border:#2b3240;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.4;
+  }
+  header{
+    padding:16px; border-bottom:1px solid var(--border); background:var(--panel);
+    position:sticky; top:0; z-index:10;
+  }
+  .wrap{
+    max-width:980px; margin:0 auto; padding:16px;
+  }
+  h1{font-size:20px; margin:0}
+  .grid{
+    display:grid; gap:16px; grid-template-columns: 1.1fr .9fr;
+  }
+  @media (max-width: 880px){ .grid{ grid-template-columns: 1fr; } }
+
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px;
+  }
+  .row{ display:flex; gap:12px; align-items:center; }
+  .row + .row{ margin-top:10px; }
+  label{ font-size:14px; color:var(--muted); min-width:96px; }
+  input[type="text"], input[type="number"], select, input[type="color"]{
+    width:100%; padding:10px 12px; border:1px solid var(--border); background:transparent; color:var(--text);
+    border-radius:10px; outline:none;
+  }
+  input::placeholder{ color:#9aa0a6; }
+  button{
+    padding:10px 14px; border:1px solid var(--border); background:var(--panel); color:var(--text);
+    border-radius:10px; cursor:pointer;
+  }
+  .btn-primary{
+    background:var(--primary); color:white; border-color:transparent;
+  }
+  .btn-ghost{
+    background:transparent;
+  }
+  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; }
+  .preview{
+    display:flex; align-items:center; justify-content:center; min-height:360px; border-radius:12px; background:
+      repeating-conic-gradient(#0000 0 90deg,#0000 0 45deg,#0000 0 90deg),
+      linear-gradient(45deg, #0000 25%, #00000008 0 50%, #0000 0 75%, #00000008 0);
+    background-size: 20px 20px, 20px 20px;
+    background-color:var(--panel); border:1px dashed var(--border);
+    position:relative; overflow:hidden;
+  }
+  .footer{
+    display:flex; justify-content:space-between; align-items:center; gap:8px;
+    margin-top:12px; color:var(--muted); font-size:13px;
+  }
+  .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
+  .titlebar{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .spacer{ flex:1; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap titlebar">
+      <h1>QR 코드 생성기</h1>
+      <div class="toolbar">
+        <button id="toggleTheme" class="btn-ghost" aria-pressed="false">라이트/다크</button>
+        <button id="resetBtn" class="btn-ghost">초기화</button>
+        <button id="pasteBtn" class="btn-ghost">붙여넣기</button>
+        <button id="downloadBtn" class="btn-primary">PNG 다운로드</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <!-- 왼쪽: 입력/옵션 -->
+      <section class="card" aria-labelledby="inputsTitle">
+        <h2 id="inputsTitle" style="margin:0 0 12px 0; font-size:16px;">입력 및 옵션</h2>
+
+        <div class="row">
+          <label for="dataInput">텍스트/URL</label>
+          <input id="dataInput" type="text" placeholder="예) https://example.com 또는 임의 텍스트" autocomplete="on" />
+        </div>
+
+        <div class="row">
+          <label for="ecLevel">오류 정정</label>
+          <select id="ecLevel">
+            <option value="L">L (약 7%)</option>
